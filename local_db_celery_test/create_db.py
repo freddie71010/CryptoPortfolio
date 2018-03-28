@@ -34,7 +34,8 @@ def main():
 								id integer PRIMARY KEY,
 								exchange text NOT NULL,
 								coin text NOT NULL,
-								price float NOT NULL
+								price float NOT NULL,
+								trading_pair text NOT NULL
 								);"""
 	conn = create_connection(db)
 	if conn is not None:

@@ -24,7 +24,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-venv/
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -100,3 +100,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# databases
+.test_gdax

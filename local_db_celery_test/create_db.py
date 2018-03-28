@@ -33,9 +33,9 @@ def main():
 	drop_prices_tbl = """DROP TABLE prices;"""
 	sql_create_price_tbl = """
 							CREATE TABLE prices (
-								id integer PRIMARY KEY,
-								exchange text NOT NULL,
+								id integer PRIMARY KEY AUTOINCREMENT,
 								coin text NOT NULL,
+								exchange text NOT NULL,
 								price float NOT NULL,
 								trading_pair text NOT NULL,
 								trans_time text NOT NULL

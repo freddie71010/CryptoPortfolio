@@ -10,13 +10,11 @@ def create_connection(db_file):
 	"""
 	try:
 		conn = sqlite3.connect(db_file)
-		print(sqlite3.version)
-		# return conn
+		print("Created database...")
+		return conn
 	except Error as e:
 		print(e)
-	finally:
-		conn.close()
-
+	return None
 
 def create_table(conn, create_table_sql):
 	""" create a table from the create_table_sql statement
@@ -24,7 +22,28 @@ def create_table(conn, create_table_sql):
 	:param create_table_sql: a CREATE TABLE statement
 	:return:
 	"""
-	pass
+	try:
+		c = conn.cursor()
+		c.execute(create_table_sql)
+	except Error as e:
+		print(e)
+
+def main():
+	db = "gdax.db"
+	sql_create_price_tbl = """CREATE TABLE IF NOT EXISTS prices (
+								id integer PRIMARY KEY,
+								exchange text NOT NULL,
+								coin text NOT NULL,
+								price float NOT NULL
+								);"""
+	conn = create_connection(db)
+	if conn is not None:
+		create_table(conn, sql_create_price_tbl)
+		print("Created table: prices")
+	else:
+		print("Error creating database connection.")
+	return
+
 
 if __name__ == "__main__":
-	create_connection("gdax.db")
+	main()

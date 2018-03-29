@@ -101,5 +101,5 @@ ENV/
 # mypy
 .mypy_cache/
 
-# databases
-.test_gdax
+# Databases
+gdax.db

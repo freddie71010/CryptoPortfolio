@@ -102,4 +102,7 @@ ENV/
 .mypy_cache/
 
 # Databases
-gdax.db
+local_db_celery_test/gdax.db
+
+# Celery
+local_db_celery_test/celerybeat-schedule*

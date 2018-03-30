@@ -105,4 +105,6 @@ ENV/
 local_db_celery_test/gdax.db
 
 # Celery
-local_db_celery_test/celerybeat-schedule*
+local_db_celery_test/celerybeat-schedule.bak
+local_db_celery_test/celerybeat-schedule.dat
+local_db_celery_test/celerybeat-schedule.dir

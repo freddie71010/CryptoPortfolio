@@ -1,8 +1,8 @@
 import sqlite3
 from flask import Flask
 from flask import request, session, g, redirect, url_for, abort, \
-	 render_template, flash
-from app import *
+	render_template, flash
+from app import flask_app
 
 
 def connect_db():

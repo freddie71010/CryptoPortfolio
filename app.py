@@ -1,15 +1,17 @@
 import os
-# from flask import Flask
-# from flask import request, session, g, redirect, url_for, abort, \
-# 	render_template, flash
+from flask import Flask
+from flask import request, session, g, redirect, url_for, abort, \
+	render_template, flash
+import db_connections
+
 from dash import Dash
-from dash.dependencies import Input, State, Output
-import dash_core_components as dcc
-import dash_html_components as html
-from db_connections import *
+from dash_graph import setup_dash_app
+
 
 flask_app = Flask(__name__)
 dash_app = Dash(server=flask_app, url_base_pathname='/dash')
+
+dash_app = setup_dash_app(dash_app)
 
 # Load default config and override config from an environment variable for flask
 flask_app.config.update(dict(
@@ -19,27 +21,10 @@ flask_app.config.update(dict(
 	PASSWORD='default'
 ))
 
-dash_app.layout = html.Div(children=[
-	dcc.Input(id='input', value='Enter something', type='text'),
-	html.Div(id='output')
-	])
-
-@dash_app.callback(
-	Output(component_id='output', component_property='children'),
-	[Input(component_id='input', component_property='value')]
-	)
-def update_value(input_data):
-	try:
-		return str(float(input_data)**2)
-	except:
-		return "Some error"
-
-
-
 
 @flask_app.route('/graph')
 def graph_all():
-	db = get_db()
+	db = db_connections.get_db()
 	query = '''
 		SELECT price, trans_time 
 		FROM prices
@@ -50,7 +35,7 @@ def graph_all():
 
 @flask_app.route('/graph/<coin>')
 def graph(coin):
-	db = get_db()
+	db = db_connections.get_db()
 	query = '''
 		SELECT price, trans_time 
 		FROM prices

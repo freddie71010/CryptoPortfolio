@@ -3,6 +3,11 @@ from flask import Flask
 from flask import request, session, g, redirect, url_for, abort, \
 	render_template, flash
 from db_connections import *
+import pandas as pd
+import numpy as np
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 
 app = Flask(__name__)
 # Load default config and override config from an environment variable

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+<p><b>This is where the graph will go. </b></p>
+
+<h1>Coin: {{coin}}</h1>
+
+{% for i in coin_data %}
+	</br>
+	{{i.price}} {{i.trans_time}}
+{% endfor %}
+
+{% endblock body %}

@@ -40,6 +40,9 @@ def graph(coin):
 		'''
 	args = (coin.upper(),)
 	coin_data = db.execute(query, args)
+	print("COIN_DATA:\n")
+	print(coin_data)
+	print("="*50)
 	return render_template('graph.html', coin_data=coin_data, coin=coin)
 
 

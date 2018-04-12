@@ -12,5 +12,4 @@ $(document).ready(function(){
 			.style("width", function(d) { return d + "px"; })
 			.text(function(d) { return d; })
 
-	var hi = "hello"
 }); //end doc

@@ -5,9 +5,16 @@
 
 <h1>Coin: {{coin}}</h1>
 
-{% for i in coin_data %}
-	</br>
-	{{i.price}} {{i.trans_time}}
+<div class='chart'></div>
+
+{% for row in coin_data %}
+	</br>{{row.price}} {{row.trans_time}}
 {% endfor %}
 
 {% endblock body %}
+
+{% block scripts %}
+	 <script type='text/javascript'> 
+	 	
+	 </script>
+{% endblock scripts %}

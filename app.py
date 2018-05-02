@@ -1,12 +1,8 @@
 import os
 from flask import Flask
 from flask import request, session, g, redirect, url_for, abort, \
-	render_template, flash
+	render_template, flash, json, jsonify
 from db_connections import *
-import pandas as pd
-import numpy as np
-import plotly.plotly as py
-import plotly.graph_objs as go
 
 
 app = Flask(__name__)
@@ -21,7 +17,7 @@ app.config.update(dict(
 
 @app.route('/graph')
 def graph_all():
-	db = get_db()
+	db = get_db().cursor()
 	query = '''
 		SELECT price, trans_time 
 		FROM prices
@@ -32,18 +28,42 @@ def graph_all():
 
 @app.route('/graph/<coin>')
 def graph(coin):
-	db = get_db()
+	# db = get_db()
+	# c = db.cursor()
 	query = '''
 		SELECT price, trans_time 
 		FROM prices
 		WHERE coin = ?
 		'''
 	args = (coin.upper(),)
-	coin_data = db.execute(query, args)
-	print("COIN_DATA:\n")
-	print(coin_data)
-	print("="*50)
-	return render_template('graph.html', coin_data=coin_data, coin=coin)
+	# c.execute(query, args)
+	# coin_data_raw = c.fetchall()
+	# price, trans_time = [], []
+	# # print("COIN_DATA_raw:\n")
+	# # for row in coin_data_raw:
+	# # 	print(row['price'], row['trans_time'])
+	# # print("="*50)
+
+	# for row in coin_data_raw:
+	# 	price.append(row['price'])
+	# 	trans_time.append(row['trans_time'])
+	# coin_data = {
+	# 	'price': price,
+	# 	'trans_time': trans_time,
+	# }
+	my_query = _query_db(query, args)
+	print(my_query)
+	json_output = json.dumps(my_query)
+	return render_template('graph.html', coin_data=json_output, coin=coin)
+
+
+def _query_db(query, args=(), one=False):
+	cur = get_db().cursor()
+	cur.execute(query, args)
+	r = [dict((cur.description[i][0], value) \
+		for i, value in enumerate(row)) for row in cur.fetchall()]
+	cur.connection.close()
+	return (r[0] if r else None) if one else r
 
 
 @app.route('/')

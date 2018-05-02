@@ -5,9 +5,14 @@
 
 <h1>Coin: {{coin}}</h1>
 
-{% for i in coin_data %}
-	</br>
-	{{i.price}} {{i.trans_time}}
-{% endfor %}
+<div class='linechart'></div>
 
 {% endblock body %}
+
+{% block scripts %}
+ <script type='text/javascript'> 
+ 	var coin_data2 = {{ coin_data }}; 
+ 	var price2 = {{ coin_data.price }}; 
+ 	var trans_time2 = {{ coin_data.trans_time }}; 
+ </script>
+{% endblock scripts %}

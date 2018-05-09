@@ -28,34 +28,19 @@ def graph_all():
 
 @app.route('/graph/<coin>')
 def graph(coin):
-	# db = get_db()
-	# c = db.cursor()
+	return render_template('graph.html', coin=coin)
+
+@app.route('/graph/get_data')
+def get_data(coin="BTC"):
 	query = '''
-		SELECT price, trans_time 
-		FROM prices
-		WHERE coin = ?
-		'''
+	SELECT price, trans_time 
+	FROM prices
+	WHERE coin = ?
+	'''
 	args = (coin.upper(),)
-	# c.execute(query, args)
-	# coin_data_raw = c.fetchall()
-	# price, trans_time = [], []
-	# # print("COIN_DATA_raw:\n")
-	# # for row in coin_data_raw:
-	# # 	print(row['price'], row['trans_time'])
-	# # print("="*50)
-
-	# for row in coin_data_raw:
-	# 	price.append(row['price'])
-	# 	trans_time.append(row['trans_time'])
-	# coin_data = {
-	# 	'price': price,
-	# 	'trans_time': trans_time,
-	# }
 	my_query = _query_db(query, args)
-	print(my_query)
-	json_output = json.dumps(my_query)
-	return render_template('graph.html', coin_data=json_output, coin=coin)
-
+	print("GET_DATA:\n", my_query)
+	return jsonify(my_query)
 
 def _query_db(query, args=(), one=False):
 	cur = get_db().cursor()

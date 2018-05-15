@@ -17,26 +17,29 @@ app.config.update(dict(
 
 @app.route('/graph')
 def graph_all():
-	db = get_db().cursor()
-	query = '''
-		SELECT price, trans_time 
-		FROM prices
-		'''
-	coin_data = db.execute(query)
-	return render_template('graph.html', coin_data=coin_data, coin='All')
-
+	return render_template('graph.html', coin='All')
 
 @app.route('/graph/<coin>')
 def graph(coin):
 	return render_template('graph.html', coin=coin)
 
-@app.route('/graph/get_data')
-def get_data(coin="BTC"):
+
+
+@app.route('/graph/get_data/<coin>')
+def get_data(coin):
+	if coin == 'All':
+		query = '''
+			SELECT price, trans_time, coin 
+			FROM prices
+			'''
+		my_query = _query_db(query)
+		print("GET_DATA ALL:\n", my_query)
+		return jsonify(my_query)
 	query = '''
-	SELECT price, trans_time 
-	FROM prices
-	WHERE coin = ?
-	'''
+		SELECT price, trans_time, coin 
+		FROM prices
+		WHERE coin = ?
+		'''
 	args = (coin.upper(),)
 	my_query = _query_db(query, args)
 	print("GET_DATA:\n", my_query)

@@ -21,11 +21,11 @@ $(document).ready(function(){
 	
 
 
-	function getData() {
+	function getData(coin_id) {
 		var result;
 		$.ajax({
 			type: "GET",
-			url: "/graph/get_data",
+			url: "/graph/get_data/"+coin_id,
 			success: function(data){
 				console.log("Success function:", data);
 				createGraph(data);
@@ -38,24 +38,31 @@ $(document).ready(function(){
 	};
 
 	console.log("Start:")
-	getData();
+	getData(coin_id);
 	console.log(":End")
 
 	function createGraph(dict_data) {
 
+	// sets the dimensions of the canvas/graph
 		var	margin = {top: 60, right: 40, bottom: 30, left: 45},
 			height = 400 - margin.top - margin.bottom,
 			width = 600 - margin.left - margin.right;
-			
+		
+	// parses the date/time	
 		var parseTime = d3.timeFormat("%x %X");
 			
-		for (var i = 0; i < dict_data.length; ++i) {
-			dict_data[i].price = +dict_data[i].price
-			dict_data[i].trans_time = new Date(dict_data[i].trans_time)
-		}
-		// console.log("Last step:", dict_data)
+	// gets the data
+		dict_data.forEach(function(d) {
+			d.price = +d.price;
+			d.trans_time = new Date(d.trans_time);
+		})
+		var dataNest = d3.nest()
+			.key(function(d) { return d.coin; })
+			.entries(dict_data);
+		console.log("dataNest:", dataNest)
+
 			
-		
+	// set the ranges
 		var xScale = d3.scaleTime()
 			.domain([d3.min(dict_data, function(d) {
 						return d.trans_time; }),
@@ -68,34 +75,35 @@ $(document).ready(function(){
 			.domain([d3.min(dict_data, function(d) {
 						return d.price; }),
 					d3.max(dict_data, function(d) {
-						return d.price;
-					})])
+						return d.price; })
+					])
 			.range([height, 0])
 		
+	// sets the axes
 		var xAxis = d3.axisBottom(xScale)
-
 		var yAxis = d3.axisLeft(yScale)
 			.ticks(5)
 
+	// defines the line
 		var line = d3.line()
 			.x(function(d) {return xScale(d.trans_time)})
 			.y(function(d) {return yScale(d.price)})
 
-
+	// creates the tooltip
 		var tooltip = d3.select('body')
 			.append('div')
 			.style('background', 'white')
 			.style('position', 'absolute')
 			.style('opacity', 0)
 
-		// Create SVG
+	// Create SVG
 		var svg = d3.select(".linechart")
 			.append('svg')
 				.attr('width', width + margin.left + margin.right)
 				.attr('height', height + margin.top + margin.bottom)
 				.style('background', '#C9D7D6')
 
-		// Adds circles of every data point
+	// Adds circles of every data point
 		var scatter = svg.append('g')
 				.selectAll('dot')
 				.data(dict_data)
@@ -123,22 +131,25 @@ $(document).ready(function(){
 			});
 
 
-		// Add line chart
-		var path = svg.append('path')
-			.attr('fill', 'none')
-			.attr('stroke', 'steelblue')
-			.attr('stroke-linejoin', 'round')
-			.attr('stroke-linecap', 'round')
-			.attr('stroke-width', 1.5)
-			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-			.attr('d', line(dict_data));
+	// Add line chart
+		dataNest.forEach(function(d) {
+			var path = svg.append('path')
+				.attr('fill', 'none')
+				.attr('stroke', 'steelblue')
+				.attr('stroke-linejoin', 'round')
+				.attr('stroke-linecap', 'round')
+				.attr('stroke-width', 1.5)
+				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+				.attr('d', line(d.values));
 
-		// Add the y-axis
+		})
+
+	// Add the y-axis
 		var yGuide = svg.append('g')
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 			.call(yAxis)
 		
-		// Add the x-axis
+	// Add the x-axis
 		var xGuide = svg.append('g')
 			.attr('transform', 'translate(' + margin.left + ',' + (height+margin.top) + ')')
 			.call(xAxis)
